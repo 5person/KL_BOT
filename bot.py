@@ -4,6 +4,9 @@ import os
 from io import BytesIO
 
 import openai
+from dotenv import load_dotenv
+
+load_dotenv()
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -35,7 +38,7 @@ async def analyze_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     key = os.getenv("OPENAI_API_KEY")
     if not key:
         await update.message.reply_text(
-            "OPENAI_API_KEY environment variable is not set"
+            "Переменная OPENAI_API_KEY не задана. Укажите её в файле .env"
         )
         return
     openai.api_key = key
@@ -68,7 +71,9 @@ async def analyze_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 def main() -> None:
     token = os.getenv("TELEGRAM_TOKEN")
     if not token:
-        raise RuntimeError("TELEGRAM_TOKEN environment variable is not set")
+        raise RuntimeError(
+            "Переменная TELEGRAM_TOKEN не задана. Укажите её в файле .env"
+        )
 
     app = ApplicationBuilder().token(token).build()
     app.add_handler(CommandHandler("start", start))
